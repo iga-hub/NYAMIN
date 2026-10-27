@@ -1,2 +1,0 @@
-# NYAMIN
-website jualan makanan
