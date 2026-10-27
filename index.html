@@ -34,13 +34,35 @@ function add(name, price, id) {
   alert(qty + ' × ' + name + ' ditambahkan ke keranjang.');
 }
 
+function showCart() {
+  if (cart.length === 0) {
+    alert('Keranjang masih kosong. Pilih produk lalu tekan + Tambah.');
+    return;
+  }
+
+  const lines = cart.map(item =>
+    '- ' + item.name + ' x' + item.qty +
+    ' = Rp' + (item.price * item.qty).toLocaleString('id-ID')
+  );
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty, 0
+  );
+
+  const detail = 'Isi keranjang:\n' +
+    lines.join('\n') +
+    '\n\nTotal sementara: Rp' + total.toLocaleString('id-ID') +
+    '\n\nTekan OK untuk lanjut ke WhatsApp.';
+
+  if (confirm(detail)) checkout();
+}
+
 function checkout() {
   let message = 'Halo NYAMIN! Saya mau pesan camilan.';
 
   if (cart.length > 0) {
     const total = cart.reduce(
-      (sum, item) => sum + item.price * item.qty,
-      0
+      (sum, item) => sum + item.price * item.qty, 0
     );
 
     const lines = cart.map(item =>
@@ -51,15 +73,14 @@ function checkout() {
     message += '\n\nRincian pesanan:\n' +
       lines.join('\n') +
       '\nTotal sementara: Rp' + total.toLocaleString('id-ID');
+  } else {
+    message += '\n\nSaya ingin tanya menu dan ketersediaan camilan.';
   }
 
-  message +=
-    '\n\nMohon konfirmasi stok, ongkir, dan cara pembayaran.';
+  message += '\n\nMohon konfirmasi stok, ongkir, dan cara pembayaran. Terima kasih!';
 
-  const url = 'https://wa.me/' + WHATSAPP_NUMBER +
-    '?text=' + encodeURIComponent(message);
-
-  window.location.href = url;
+  window.location.href =
+    'https://wa.me/' + WA + '?text=' + encodeURIComponent(message);
 }
 
 function renderCart() { document.getElementById('count').textContent = cart.reduce((sum, p) => sum + p.qty, 0); }
